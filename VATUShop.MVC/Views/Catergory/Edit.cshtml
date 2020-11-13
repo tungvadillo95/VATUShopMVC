@@ -1,0 +1,27 @@
+﻿@model CatergoryViewModel
+@{
+    ViewBag.Title = "Edit Catergory";
+}
+<h2 class="text-center text-warning">SỬA LOẠI HÀNG</h2>
+<form enctype="multipart/form-data" asp-controller="Catergory" asp-action="Edit" method="post" class="mt-2">
+    <input hidden asp-for="CategoryId" />
+    <div class="col-xl-12">
+        <div style="padding-left: 50px;">
+            <div class="row form-group">
+                <div class="col-sm-2">
+                    <label asp-for="CategoryName"></label>
+                </div>
+                <div class="col-sm-5">
+                    <input asp-for="CategoryName" class="form-control" />
+                    <span asp-validation-for="CategoryName" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group text-left">
+            <div class="col-sm-12">
+                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                <a asp-controller="Catergory" asp-action="Index" class="btn btn-warning">Hủy</a>
+            </div>
+        </div>
+    </div>
+</form>

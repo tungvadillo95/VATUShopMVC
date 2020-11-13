@@ -1,0 +1,36 @@
+﻿@inject SignInManager<ApplicationUser> signInManager
+@model ProductViewModel
+@{
+    ViewBag.Title = Model.ProductName;
+    var imagePath = $"/img/{(Model.ImagePath ?? "none-avatar.png")}";
+}
+
+<h3 class="text-center">@Model.ProductName</h3>
+<div class="row col-10 justify-content-center">
+    <div class="col-5">
+        <img src="@imagePath" class="m-2" style="width: 400px; height: 450px;" />
+    </div>
+    <div class="col-5 m-2">
+        <div class="card">
+            <div class="card-body">
+                <p><b>Mô tả:</b> @Model.Description</p>
+                <p><b>Loại:</b> @Model.CategoryName</p>
+                <p><b>Thương hiệu:</b> @Model.BrandingName</p>
+                <p><b>Giá:</b> @Model.Price.ToString("#,##0") ₫</p>
+                <p><b>Số lượng:</b> @Model.Inventory</p>
+                <p><b>Trạng thái:</b> @(Model.Status?"Bán":"Dừng bán")</p>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-controller="Product" asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-secondary">Sửa</a>
+                <a href="javascript:void(0)" class="btn btn-danger" onclick="products.delete(@Model.ProductId)">Xóa</a>
+                <a asp-controller="Product" asp-action="Index" class="btn btn-success">Quay lại</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+    <script src="~/js/product.js"></script>
+}

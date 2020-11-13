@@ -1,0 +1,44 @@
+﻿@model IEnumerable<ProductViewModel>
+@{
+    ViewBag.Title = "Home Page";
+    int count = 0;
+}
+<div id="slides" class="carousel slide" data-ride="carousel">
+    <ul class="carousel-indicators">
+        <li data-target="#slides" data-slide-to="0" class="active"></li>
+        <li data-target="#slides" data-slide-to="1"></li>
+    </ul>
+    <div class="carousel-inner text-center">
+        <div class="carousel-item active">
+            <img src="~/img/carousel_img1.jpg" />
+        </div>
+        <div class="carousel-item">
+            <img src="~/img/carousel_img2.jpg" />
+        </div>
+    </div>
+</div>
+<br />
+<h1 class="text-center text-success">Sản Phẩm</h1>
+<hr />
+<div class="row justify-content-center">
+    @foreach (var product in Model)
+    {
+        if (!product.IsDelete && product.Status)
+        {
+            var imagePath = $"/img/{(product.ImagePath ?? "none-avatar.png")}";
+            <a asp-controller="Home" asp-action="Details" asp-route-id="@product.ProductId" style="text-decoration: none;">
+                <div class="col-3">
+                    <div class="m-1">
+                        <img src="@imagePath" class="card-img-top myImage" asp-append-version="true" style="width:300px; height: 300px;" />
+                        <div class="card-header" style="width:300px;">
+                            <b style="text-align: left;">@product.ProductName</b>
+                            <p style="text-align: left;">Giá: @product.Price.ToString("#,##0") ₫</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            count++;
+        }
+        if (count == 8) break;
+    }
+</div>

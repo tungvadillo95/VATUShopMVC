@@ -1,0 +1,67 @@
+﻿@inject SignInManager<ApplicationUser> signInManager
+@model ProductViewModel
+@{
+    ViewBag.Title = Model.ProductName;
+    var imagePath = $"/img/{(Model.ImagePath ?? "none-avatar.png")}";
+}
+
+<h2 class="text-center text-success">@TempData["Message"]</h2>
+<h3 class="text-center">@Model.ProductName</h3>
+<div class="row col-xl-12">
+    <div class="col-xl-6 col-md-12">
+        <div class="row form-group m-2">
+            <img src="@imagePath" class="ml-2" style="width: 400px; height: 450px;" />
+        </div>
+    </div>
+    <div class="col-xl-6 col-md-12">
+        <div class="row form-group m-2">
+            <div class="card">
+                <div class="card-body">
+                    <p><b>Mô tả:</b> @Model.Description</p>
+                    <p><b>Loại:</b> @Model.CategoryName</p>
+                    <p><b>Thương hiệu:</b> @Model.BrandingName</p>
+                    <p><b>Giá:</b><b class="text-danger"> @Model.Price.ToString("#,##0") ₫</b></p>
+                    <div>
+                        <b>Số lượng : </b>
+                        <input type="number" min="1" value="1" id="quantity"/>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    @if (signInManager.IsSignedIn(User))
+                    {
+                        if (User.IsInRole("System Admin"))
+                        {
+                            <a asp-controller="Product" asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-secondary">Sửa</a>
+                            <a href="javascript:void(0)" class="btn btn-danger" onclick="products.delete(@Model.ProductId)">Xóa</a>
+                            <a asp-controller="Product" asp-action="Index" class="btn btn-success">Trang chủ</a>
+                        }
+                        else
+                        {
+                            @*<a href="javascript:void(0)" onclick="products.addCart(@Model.ProductId)" class="btn btn-primary" style="width: 170px; ">Thêm vào giỏ hàng</a>*@
+                            @*<a asp-controller="ShoppingCart" asp-action="AddCart" asp-route-id="@Model.ProductId" class="btn btn-primary" style="width: 170px; ">Thêm vào giỏ hàng</a>*@
+                            <a href="javascript:void(0)" class="btn btn-primary" style="width: 170px;" onclick="products.addCart(@Model.ProductId,1)">Thêm vào giỏ hàng</a>
+                            <a asp-controller="Home" asp-action="Index" asp-route-id="@Model.ProductId" class="btn btn-dark" style="width: 150px; ">Sản phẩm khác</a>
+                        }
+                    }
+                    else
+                    {
+                        @*<button type="button" class="btn btn-success" data-toggle="modal" data-target="#orderModal">
+                Mua ngay
+            </button>*@
+                        @*<a asp-controller="ShoppingCart" asp-action="BuyNow" class="btn btn-success"> Mua ngay</a>*@
+                        <a href="javascript:void(0)" class="btn btn-success" onclick="products.addCart(@Model.ProductId,0)"> Mua ngay</a>
+                        <a href="javascript:void(0)" class="btn btn-primary" style="width: 170px;" onclick="products.addCart(@Model.ProductId,1)">Thêm vào giỏ hàng</a>
+                        @*<a asp-controller="ShoppingCart" asp-action="AddCart" asp-route-id="@Model.ProductId" class="btn btn-primary" style="width: 170px; ">Thêm vào giỏ hàng</a>*@
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-dark" style="width: 150px; ">Sản phẩm khác</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+    <script src="~/js/details_product.js" asp-append-version="true"></script>
+}

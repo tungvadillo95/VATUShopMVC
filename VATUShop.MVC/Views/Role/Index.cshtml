@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Role>
+@{
+    ViewBag.Title = "Role Management";
+}
+<br />
+<h3 class="display-4 text-success text-center">QUẢN LÝ VAI TRÒ</h3>
+<a asp-controller="Role" asp-action="Create" class="btn btn-primary" style="width:auto;">+ Tạo vai trò</a>
+<hr />
+<table id="tbRoles" class="table table-bordered table-hover mt-2">
+    <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Role name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var role in Model)
+            {
+                <tr>
+                    <td>@role.RoleId</td>
+                    <td>@role.RoleName</td>
+                    <td>
+                        <a asp-controller="Role" asp-action="Edit" asp-route-id="@role.RoleId" class="btn btn-warning">Edit</a>
+                        <a asp-controller="Role" asp-action="Delete" asp-route-id="@role.RoleId" class="btn btn-success">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+    <script src="~/js/role.js" asp-append-version="true"></script>
+}

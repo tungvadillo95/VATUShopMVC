@@ -1,0 +1,53 @@
+﻿@inject VATUShopMVCDbContext context
+@model IEnumerable<UserViewModel>
+@{
+    ViewBag.Title = "User Management";
+}
+<br />
+<h3 class="display-4 text-success text-center">QUẢN LÝ TÀI KHOẢN</h3>
+<a asp-controller="User" asp-action="Create" class="btn btn-primary" style="width: auto;">+ Tạo tài khoản</a>
+<hr />
+<table id="tbUsers" class="table table-bordered table-hover table-primary">
+    <thead class="thead-dark text-center">
+        <tr>
+            <th>Họ và tên</th>
+            <th>Email</th>
+            <th>Điện thoại</th>
+            <th>Địa chỉ</th>
+            <th>Vai trò</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var user in Model)
+            {
+                if (user.RolesName != "System Admin" && !user.IsDeleted)
+                {
+                    <tr>
+
+                        <td>@user.FullName</td>
+                        <td>@user.Email</td>
+                        <td>@user.PhoneNumber</td>
+                        <td>
+                            @(user.Address  + ", " + context.Wards.Where(d => d.id == user.WardId).FirstOrDefault().WardName
+                                            + ", " + context.Districts.Where(d => d.id == user.DistrictId).FirstOrDefault().DistrictName
+                                            + ", " + context.Provinces.Where(p => p.id == user.ProvinceId).FirstOrDefault()._name)
+                        </td>
+                        <td>@user.RolesName</td>
+                        <td>
+                            <a asp-controller="User" asp-action="Edit" asp-route-id="@user.UserId" class="btn btn-warning">Sửa</a>
+                            <a asp-controller="User" asp-action="Delete" asp-route-id="@user.UserId" class="btn btn-danger">Xóa</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+    <script src="~/js/user.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,155 @@
+﻿@model EditProductViewModel
+@{
+    ViewBag.Title = "Edit Product";
+    var imagePath = $"/img/{(Model.ImagePath ?? "none-avatar.png")}";
+    string brandName = "";
+    foreach (var item in Model.Brands)
+    {
+        if (item.BrandId == Model.BrandingId)
+        {
+            brandName = item.BrandName;
+            break;
+        }
+    }
+    string catergoryName = "";
+    foreach (var item in Model.Categories)
+    {
+        if (item.CategoryId == Model.CategoryId)
+        {
+            catergoryName = item.CategoryName;
+            break;
+        }
+    }
+}
+<h2 class="text-center text-warning my-4">SỬA SẢN PHẨM</h2>
+<form enctype="multipart/form-data" asp-controller="Product" asp-action="Edit" method="post" class="mt-2">
+    <input hidden asp-for="ProductId" />
+    <input hidden asp-for="ImagePath" />
+    <div class="row col-xl-12">
+        <div class="col-xl-8 col-md-12">
+            <div style="padding-left: 50px;">
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label asp-for="ProductName"></label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input asp-for="ProductName" class="form-control" />
+                        <span asp-validation-for="ProductName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label asp-for="CategoryId"></label>
+                    </div>
+                    <div class="col-sm-10">
+                        <select asp-for="CategoryId" asp-items="@(new SelectList(Model.Categories, "CategoryId", "CategoryName"))" class="custom-select" style="width:20%">
+                            <option selected value="@Model.CategoryId" class="text-center">
+                                @brandName
+                            </option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label asp-for="BrandingId"></label>
+                    </div>
+                    <div class="col-sm-10">
+                        <select asp-for="BrandingId" asp-items="@(new SelectList(Model.Brands, "BrandId", "BrandName"))" class="custom-select" style="width:20%">
+                            <option selected value="@Model.BrandingId" class="text-center">
+                                @catergoryName
+                            </option>
+                        </select>
+                        <span asp-validation-for="BrandingId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label asp-for="Price"></label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input asp-for="Price" class="form-control" style="width: 50%;" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label asp-for="Inventory"></label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input asp-for="Inventory" class="form-control" style="width: 50%;" />
+                        <span asp-validation-for="Inventory" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label asp-for="Description"></label>
+                    </div>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" rows="2" onblur="this.value=removeSpaces(this.value);" asp-for="Description"></textarea>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label asp-for="Image"></label>
+                    </div>
+                    <div class="col-sm-10">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" asp-for="Image">
+                            <label class="custom-file-label" for="customFile">Choose file</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label asp-for="Status"></label>
+                    </div>
+                    <div class="col-sm-10">
+                        <select asp-for="Status" class="form-control">
+                            <option value="false">Dừng bán</option>
+                            <option value="true">Bán</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-12">
+            <div class="m-5">
+                <img src="@imagePath" id="image_upload_preview" asp-append-version="true" style="width:300px; height: 300px;" />
+            </div>
+        </div>
+    </div>
+    <div class="row form-group text-center">
+        <div class="col-sm-12">
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <a asp-controller="Product" asp-action="Index" class="btn btn-warning">Quay lại</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#image_upload_preview').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#customFile").change(function () {
+            readURL(this);
+        });
+
+        $(document).ready(function () {
+            $(".custom-file-input").on("change", function () {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            });
+        });
+    </script>
+}

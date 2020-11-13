@@ -1,0 +1,148 @@
+﻿@inject SignInManager<ApplicationUser> signInManager
+@{
+    var data = Context.Session.GetString("cart");
+
+    int coutCart = 0;
+    if (data == null)
+    {
+        coutCart = 0;
+    }
+    else
+    {
+        var data2 = Context.Session.GetString("cart");
+        List<CartProduct> dataCart = JsonConvert.DeserializeObject<List<CartProduct>>(data2);
+        foreach (var item in dataCart)
+        {
+            coutCart += item.Quantity;
+        }
+    }
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - VATUShop.MVC</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+            <img src="~/img/logo.png" style="width:100px; height: 40px;">
+        </a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#mainMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainMenu">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a asp-controller="Home" asp-action="Index" class="nav-link text-light mx-2">Trang chủ</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-light mx-2">Giới thiệu</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                @if (signInManager.IsSignedIn(User))
+                {
+                    if (User.IsInRole("System Admin"))
+                    {
+                        <li class="nav-item">
+                            <a href="/Admin/Index" class="nav-link text-light mx-2">Admin</a>
+                        </li>
+                        <li>
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="btn btn-link text-light" style="width: auto;">
+                                    Logout @User.Identity.Name
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a asp-controller="ShoppingCart" asp-action="ListCart" class="nav-link text-light mx-2">
+                                Giỏ hàng +<b class="text-warning" id="countCart">@coutCart</b>
+                            </a>
+                        </li>
+                        <li>
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="btn btn-link text-light" style="width: auto;">
+                                    Logout @User.Identity.Name
+                                </button>
+                            </form>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a asp-controller="ShoppingCart" asp-action="ListCart" class="nav-link text-light mx-2">
+                            Giỏ hàng +<b class="text-warning" id="countCart">@coutCart</b>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Account" asp-action="Register" class="nav-link text-light">Sign Up</a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Account" asp-action="Login" class="nav-link text-light">Login</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </nav>
+    <div>
+        @RenderBody()
+    </div>
+    <div class="card-footer container-fluid padding" style="font-size: 14px; background-color: black; color: white; margin-top: 50px; margin-bottom: 0px;">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <h6>CHĂM SÓC KHÁCH HÀNG</h6>
+                <hr />
+                <h6 style="color: yellow;">1900 999 999 - 1</h6>
+            </div>
+            <div class="col-md-3 text-left">
+                <h6>THÔNG TIN</h6>
+                <hr />
+                <p class="footer_size">Giới thiệu</p>
+                <p class="footer_size">Liên hệ công ty</p>
+                <p class="footer_size">Đối tác</p>
+                <p class="footer_size">Tuyển dụng</p>
+            </div>
+            <div class="col-md-3 text-left">
+                <h6>CHÍNH SÁCH</h6>
+                <hr />
+                <p class="footer_size">Chính sách đổi hàng</p>
+                <p class="footer_size">Chính sách bảo hành</p>
+                <p class="footer_size">Chính sách bảo mật</p>
+            </div>
+            <div class="col-md-3 text-left">
+                <h6>FAQ</h6>
+                <hr />
+                <p class="footer_size">Thanh toán vận chuyển</p>
+                <p class="footer_size">Hướng dẫn chọn size</p>
+                <p class="footer_size">Kiểm tra thông tin đơn hàng</p>
+                <p class="footer_size">Câu hỏi thường gặp</p>
+            </div>
+        </div>
+    </div>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            © 2020 - CÔNG TY TNHH VATU VN. Địa chỉ: 28 Nguyễn Tri Phương - Thành phố Huế, Việt Nam.
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/font-awesome/js/all.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

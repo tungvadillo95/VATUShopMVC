@@ -1,0 +1,96 @@
+﻿@inject SignInManager<ApplicationUser> signInManager
+@{
+    var dataCart = ViewBag.carts as List<CartProduct>;
+    ViewData["Title"] = "List Cart";
+    int STT = 0;
+    float totalCart = 0;
+    float total = 0;
+}
+
+<h3 class="display-4 text-success text-center">CHI TIẾT GIỎ HÀNG</h3>
+@if (TempData["Message"] != null)
+{
+    <p class=" text-center alert alert-success">@TempData["Message"]</p>
+}
+<hr />
+<div class="text-center ml-4 mr-4">
+    @if (dataCart != null)
+    {
+        <table id="tbCarts" class="table table-bordered table-hover table-primary">
+            <thead class="thead-dark">
+                <tr>
+                    <th>STT</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Phân loại</th>
+                    <th>Thương hiệu</th>
+                    <th>Đơn giá</th>
+                    <th>Số lượng</th>
+                    <th>Hình ảnh</th>
+                    <th>Thành tiền</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                    @foreach (var cart in dataCart)
+                    {
+                        STT++;
+                        total = cart.Product.Price * cart.Quantity;
+                        string txt_class = "quantity_" + cart.Product.ProductId;
+                        totalCart += total;
+
+                        <tr>
+                            <td>@STT</td>
+                            <td>@cart.Product.ProductName</td>
+                            <td>@cart.Product.CategoryName</td>
+                            <td>@cart.Product.BrandingName</td>
+                            <td>@cart.Product.Price.ToString("#,##0") ₫</td>
+                            <td>
+                                <input type="number" value="@cart.Quantity" class="form-control @txt_class" min="1" style="height:25px; width:80px; text-align: center">
+                            </td>
+                            <td>
+                                <img src="/img/@cart.Product.ImagePath" style="width: 60px; height: 70px;" />
+                            </td>
+                            <td>@total.ToString("#,##0") ₫</td>
+                            <td>
+                                <a href="" data-id="@cart.Product.ProductId" class="updateCart btn btn-primary text-warning">Cập nhật</a>
+                                <a href="javascript:void(0)" onclick="carts.delete(@cart.Product.ProductId)" class="btn btn-danger">Xóa</a>
+                            </td>
+                        </tr>
+                }
+            </tbody>
+        </table>
+        <h4 class="text-center text-primary">Tổng giá trị hóa đơn: @totalCart.ToString("#,##0") ₫</h4>
+            <a asp-controller="Order" asp-action="Create" class="btn btn-success" style="width:200px; height:40px;">Đặt hàng</a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-info" style="width:200px; height:40px;">Sản phẩm khác</a>
+    }
+    else
+    {
+        <p class="text-center alert alert-danger">Giỏ hàng hiện đang không có gì !</p>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-info" style="width:200px; height:40px;">Sản phẩm khác</a>
+    }
+</div>
+
+@section Scripts{
+    <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+    <script src="~/js/list_carts.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+        $(".updateCart").click(function (event) {
+            event.preventDefault();
+            var quantity = $(".quantity_" + $(this).attr("data-id")).val();
+            console.log(quantity);
+            $.ajax({
+                type: "POST",
+                url:"@Url.Action("UpdateCart", "ShoppingCart")",
+                data: {
+                    id: $(this).attr("data-id"),
+                    quantity: quantity
+                },
+                success: function (result) {
+                    window.location.href = '@Url.Action("ListCart", "ShoppingCart")';
+                }
+            });
+        });
+    });
+    </script>
+}

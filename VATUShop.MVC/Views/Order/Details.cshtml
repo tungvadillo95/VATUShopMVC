@@ -1,0 +1,88 @@
+﻿@inject VATUShopMVCDbContext context
+@model OrderViewModel
+@{
+    ViewBag.Title = "Order " + Model.OrderId;
+    float subTotal = 0;
+    foreach (var od in Model.OrderDetails)
+    {
+        subTotal += (od.Quantity * od.UnitPrice);
+    }
+    var stt = 0;
+}
+
+<h2 class="text-center text-primary">CHI TIẾT ĐƠN HÀNG</h2>
+<div class="row justify-content-center">
+    <div class="m-2">
+        <div class="card">
+            <div class="card-body">
+                <p><b>Tên khách hàng: </b> @Model.FullName</p>
+                <p><b>Số điện thoại: </b> @Model.PhoneNumber</p>
+                <p>
+                    <b>Địa chỉ: </b>
+                    @(Model.Address + ", " + context.Wards.Where(w => w.id == Model.WardId).FirstOrDefault().WardName
+                                        + ", " + context.Districts.Where(d => d.id == Model.DistrictId).FirstOrDefault().DistrictName
+                                        + ", " + context.Provinces.Where(p => p.id == Model.ProvinceId).FirstOrDefault()._name)
+                </p>
+                <p>
+                    <b>Ngày tạo đơn: </b>
+                    @Model.DateCreated.ToString("dd/MM/yyyy-hh:mm tt")
+                </p>
+                <p>
+                    <b>Ngày ship: </b>
+                    @Model.DateShip.ToString("dd/MM/yyyy-hh:mm tt")
+                </p>
+                <p>
+                    <b>Trạng thái: </b>
+                    @context.StatusOrders.Where(s => s.StatusId == Model.StatusId).FirstOrDefault().StatusName
+                </p>
+                <div>
+                    <table class="table table-bordered table-hover table-primary">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>STT</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Số lượng</th>
+                                <th>Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Model.OrderDetails)
+                            {
+                                stt++;
+                                var total = product.UnitPrice * product.Quantity;
+                                <tr>
+                                    <td>@stt</td>
+                                    <td>
+                                        <div class="row m-1">
+                                            <img src="/img/@product.ImagePath" style="width: 30px; height: 30px;" />
+
+                                            <b style="margin-left:10px;">@product.ProductName</b>
+                                        </div>
+                                    </td>
+                                    <td>@product.UnitPrice.ToString("#,##0") ₫</td>
+                                    <td>@product.Quantity</td>
+                                    <td>@total.ToString("#,##0") ₫</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <p>
+                    <b>Tổng giá trị đơn hàng: </b>
+                    <b class="text-danger"> @subTotal.ToString("#,##0") ₫</b>
+                </p>
+            </div>
+            <div class="card-footer text-center">
+                @*<a asp-controller="Admin" asp-action="EditNormalOrder" asp-route-id="@Model.OrderId" class="btn btn-secondary">Sửa</a>*@
+                <a href="javascript:void(0)" onclick="orders.delete(@Model.OrderId)" class="btn btn-danger">Xóa</a>
+                <a asp-controller="Order" asp-action="Index" class="btn btn-success">Quay lại</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+    <script src="~/js/admin_order.js" asp-append-version="true"></script>
+}

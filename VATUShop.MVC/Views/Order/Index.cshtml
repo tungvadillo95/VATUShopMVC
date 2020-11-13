@@ -1,0 +1,65 @@
+﻿@inject VATUShopMVCDbContext context
+@model List<OrderViewModel>
+@{
+    ViewData["Title"] = "Orders List";
+}
+
+<div class="text-left">
+    <h3 class="display-4 text-primary text-center">QUẢN LÝ ĐƠN HÀNG</h3>
+    @if (TempData["Message"] != null)
+    {
+        <p class="alert alert-default-success">@TempData["Message"]</p>
+    }
+    <br />
+    <a asp-controller="Order" asp-action="Create" class="btn btn-primary" style="width: auto;">+ Thêm đơn hàng</a>
+    <hr />
+    <table id="tbOrders" class="table table-bordered table-hover table-primary">
+        <thead class="thead-dark">
+            <tr>
+                <th>#ID</th>
+                <th>Ngày tạo đơn</th>
+                <th>Ngày ship</th>
+                <th>Account</th>
+                <th>Trạng thái</th>
+                <th>Giá trị</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                float total = 0;
+                if (!order.IsDelete)
+                {
+                    @foreach (var od in order.OrderDetails)
+                    {
+                        total += (od.Quantity * od.UnitPrice);
+                    }
+                    <tr>
+                        <td>@order.OrderId</td>
+                        <td>@order.DateCreated.ToString("dd/MM/yyyy-hh:mm tt")</td>
+                        <td>@order.DateShip.ToString("dd/MM/yyyy-hh:mm tt")</td>
+                        <td>@(order.IsAnonymousOrder?"Không":"Có")</td>
+                        <td>
+                            @context.StatusOrders.Where(s => s.StatusId == order.StatusId).FirstOrDefault().StatusName
+                        </td>
+                        <td>
+                            @total.ToString("#,##0") ₫
+                        </td>
+                        <td>
+                            <a asp-controller="Order" asp-action="Details" asp-route-id="@order.OrderId" class="text-primary"><i class="fas fa-eye"></i></a>
+                            @*<a asp-controller="Order" asp-action="Edit" asp-route-id="@order.OrderId" class="text-warning"><i class="fas fa-edit"></i></a>*@
+                            <a href="javascript:void(0)" class="text-danger" onclick="orders.delete(@order.OrderId)"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@section Scripts{
+    <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+    <script src="~/js/admin_order.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,177 @@
+﻿@inject VATUShopMVCDbContext context
+@inject SignInManager<ApplicationUser> signInManager
+@model OrderViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Create Order";
+    var dataCart = ViewBag.carts != null ? ViewBag.carts as List<CartProduct> : new List<CartProduct>();
+    IEnumerable<District> districts = context.Districts.Where(d => d._province_id == Model.ProvinceId);
+    IEnumerable<Ward> wards = context.Wards.Where(w => w._district_id == Model.DistrictId);
+}
+
+<h2 class="text-center text-success m-2">THÔNG TIN ĐƠN HÀNG</h2>
+<hr />
+@if (TempData["Message"] != null)
+{
+    <p class="alert alert-success">@TempData["Message"]</p>
+}
+<form enctype="multipart/form-data" asp-controller="Order" asp-action="Create" method="post">
+    <div class="row col-xl-12">
+        <div class="col-xl-6 col-md-12">
+            <h3 class="text-primary">Thông tin hóa đơn</h3>
+            <div class="row form-group m-2">
+                <div class="col-sm-2">
+                    <label asp-for="FullName"></label>
+                </div>
+                <div class="col-sm-10">
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row form-group m-2">
+                <div class="col-sm-2">
+                    <label asp-for="Email"></label>
+                </div>
+                <div class="col-sm-10">
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row form-group m-2">
+                <div class="col-sm-2">
+                    <label asp-for="PhoneNumber"></label>
+                </div>
+                <div class="col-sm-10">
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+            </div>
+            @if (signInManager.IsSignedIn(User))
+            {
+                <div class="row col-xs-12 m-2">
+                    <div class="col-md-4 col-sm-4">
+                        <div class="form-group">
+                            <label asp-for="ProvinceId"></label>
+                            <select asp-for="ProvinceId" asp-items="@(new SelectList(context.Provinces, "id", "_name"))" class="custom-select" onchange="create.changeProvince(this.value)">
+                            </select>
+                            <span asp-validation-for="ProvinceId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="form-group  ">
+                            <label asp-for="DistrictId"></label>
+                            <select asp-for="DistrictId" asp-items="@(new SelectList(districts, "id", "DistrictName"))" class="custom-select" onchange="create.changeDistrict(this.value)">
+                            </select>
+                            <span asp-validation-for="DistrictId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="form-group  ">
+                            <label asp-for="WardId"></label>
+                            <select asp-for="WardId" asp-items="@(new SelectList(wards, "id", "WardName"))" class="custom-select">
+                            </select>
+                            <span asp-validation-for="WardId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="row col-xs-12 m-2">
+                    <div class="col-md-4 col-sm-4">
+                        <div class="form-group  ">
+                            <label asp-for="ProvinceId"></label>
+                            <select asp-for="ProvinceId" asp-items="@(new SelectList(Model.Provinces, "id", "_name"))" class="custom-select" onchange="create.changeProvince(this.value)">
+                                <option selected value="">-Chọn-</option>
+                            </select>
+                            <span asp-validation-for="ProvinceId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="form-group  ">
+                            <label asp-for="DistrictId"></label>
+                            <select asp-for="DistrictId" asp-items="@(new SelectList(Model.Districts, "id", "DistrictName"))" class="custom-select" onchange="create.changeDistrict(this.value)">
+                                <option selected value="">-Chọn-</option>
+                            </select>
+                            <span asp-validation-for="DistrictId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="form-group  ">
+                            <label asp-for="WardId"></label>
+                            <select asp-for="WardId" asp-items="@(new SelectList(Model.Wards, "id", "WardName"))" class="custom-select">
+                                <option selected value="">-Chọn-</option>
+                            </select>
+                            <span asp-validation-for="WardId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="row form-group m-2">
+                <div class="col-sm-2">
+                    <label asp-for="Address"></label>
+                </div>
+                <div class="col-sm-10">
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-md-12">
+            <h3 class="text-warning">Thông tin giỏ hàng</h3>
+
+            @if (dataCart.Count > 0)
+            {
+                var stt = 0;
+                float subTotal = 0;
+                <table id="tbListCart" class="table table-bordered table-hover table-primary">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cart in dataCart)
+                        {
+                            stt++;
+                            var total = cart.Product.Price * cart.Quantity;
+                            subTotal += cart.Product.Price * cart.Quantity;
+                        <tr>
+                            <td>@stt</td>
+                            <td>
+                                <div class="row m-1">
+                                    <img src="/img/@cart.Product.ImagePath" style="width: 30px; height: 30px;" />
+
+                                    <b style="margin-left:10px;">@cart.Product.ProductName</b>
+                                </div>
+                            </td>
+                            <td>@cart.Product.Price.ToString("#,##0") ₫</td>
+                            <td>@cart.Quantity</td>
+                            <td>@((cart.Product.Price * cart.Quantity).ToString("#,##0")) ₫</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+                <h4>Tổng cộng: <b class="text-success">@subTotal.ToString("#,##0") ₫</b></h4>
+                <p class="alert alert-warning">Áp dụng phương thức thanh toán: Thanh toán tiền mặt khi nhận hàng (COD)</p>
+            }
+            else
+            {
+                <p class="alert alert-warning">Giỏ hàng đang trống</p>
+            }
+        </div>
+    </div>
+    <div class="text-center form-group">
+        <button type="submit" class="btn btn-primary">Đặt hàng</button>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-danger" style="width: 160px; ">Tiếp tục mua hàng</a>
+    </div>
+</form>
+@section Scripts{
+    <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+    <script src="~/js/address.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "Access Denied";
+}
+<div class="alert alert-danger">
+    <h1>
+        @ViewBag.Title
+    </h1>
+    <hr />
+    <h5>
+        Bạn không có quyền xem tài nguyên này!
+    </h5>
+</div>
+<a asp-controller="Home" asp-action="Index" class="btn btn-outline-success" style="width:auto">
+    Click vào đây để về trang chủ
+</a>
