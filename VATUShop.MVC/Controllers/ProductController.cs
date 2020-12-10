@@ -88,5 +88,22 @@ namespace VATUShop.MVC.Controllers
             }
             return Ok(false);
         }
+        [HttpPatch]
+        [Route("/Product/ChangeStatus/{productId}/{statusInt}")]
+        public IActionResult ChangeStatus(int productId, int statusInt)
+        {
+            var status = true;
+            if (statusInt == 0)
+            {
+                status = false;
+            }
+            if (productService.ChangeStatus(productId, status) > 0)
+            {
+                TempData["Message"] = $"Bạn đã chuyển trạng thái sản phẩm có ID: {productId} thành công";
+                return Ok(true);
+            }
+            TempData["Message"] = $"Thao tác chuyển trạng thái sản phẩm có ID: {productId} không thành công";
+            return Ok(false);
+        }
     }
 }

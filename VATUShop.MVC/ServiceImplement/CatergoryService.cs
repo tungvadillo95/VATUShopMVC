@@ -12,10 +12,13 @@ namespace VATUShop.MVC.ServiceImplement
     public class CatergoryService : ICatergoryService
     {
         private readonly ICatergoryRepository catergoryRepository;
+        private readonly IProductRepository productRepository;
 
-        public CatergoryService(ICatergoryRepository catergoryRepository)
+        public CatergoryService(ICatergoryRepository catergoryRepository,
+                                IProductRepository productRepository)
         {
             this.catergoryRepository = catergoryRepository;
+            this.productRepository = productRepository;
         }
 
         public int Create(CatergoryViewModel model)
@@ -24,6 +27,11 @@ namespace VATUShop.MVC.ServiceImplement
         }
         public bool Delete(int id)
         {
+            var products = productRepository.Gets().Where(p => p.CategoryId == id).ToList();
+            if (products.Count > 0)
+            {
+                return false;
+            }
             return catergoryRepository.Delete(id);
         }
 

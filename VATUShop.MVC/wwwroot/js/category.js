@@ -17,10 +17,8 @@ categories.delete = function (id) {
                     url: `/Catergory/Delete/${id}`,
                     method: "GET",
                     contentType: 'json',
-                    success: function (data) {
-                        if (data > 0) {
+                    success: function () {
                             window.location.href = "/Catergory/Index";
-                        }
                     }
                 });
             }

@@ -16,6 +16,14 @@ namespace VATUShop.MVC.RepositoryImplement
         {
             this.context = context;
         }
+
+        public int ChangeStatus(int id, int status)
+        {
+            var order = context.Orders.Where(o => o.OrderId == id).FirstOrDefault();
+            order.StatusId = status;
+            return context.SaveChanges();
+        }
+
         public int Create(Order order)
         {
             context.Orders.Add(order);
@@ -62,10 +70,26 @@ namespace VATUShop.MVC.RepositoryImplement
                              PhoneNumber = c.PhoneNumber,
                              IsAnonymousOrder = o.IsAnonymousOrder,
                              StatusId = o.StatusId,
+                             StatusName = (from s in context.StatusOrders
+                                           where s.StatusId == o.StatusId
+                                           select s.StatusName).FirstOrDefault(),
                              IsDelete = o.IsDelete,
                              ProvinceId = c.ProvinceId,
+                             ProvinceName = (from p in context.Provinces
+                                             where p.id == c.ProvinceId
+                                             select p._name).FirstOrDefault(),
                              DistrictId = c.DistrictId,
+                             DistrictName = (from d in context.Districts
+                                             where d.id == c.DistrictId
+                                             select d._prefix).FirstOrDefault() + (from d in context.Districts
+                                                                                   where d.id == c.DistrictId
+                                                                                   select d._name).FirstOrDefault(),
                              WardId = c.WardId,
+                             WardName = (from w in context.Wards
+                                         where w.id == c.WardId
+                                         select w._prefix).FirstOrDefault() + (from w in context.Wards
+                                                                               where w.id == c.WardId
+                                                                               select w._name).FirstOrDefault(),
                              Address = c.Address,
                              AccountCustomerId = o.AccountCustomerId
                          }).FirstOrDefault();
@@ -89,6 +113,9 @@ namespace VATUShop.MVC.RepositoryImplement
                           PhoneNumber = c.PhoneNumber,
                           IsAnonymousOrder = o.IsAnonymousOrder,
                           StatusId = o.StatusId,
+                          StatusName = (from s in context.StatusOrders
+                                        where s.StatusId == o.StatusId
+                                        select s.StatusName).FirstOrDefault(),
                           IsDelete = o.IsDelete,
                           ProvinceId = c.ProvinceId,
                           DistrictId = c.DistrictId,
@@ -108,10 +135,5 @@ namespace VATUShop.MVC.RepositoryImplement
         }));
             return orders;
         }
-
-        //public IEnumerable<StatusOrder> GetsStatus()
-        //{
-        //    return context.StatusOrders.ToList();
-        //}
     }
 }

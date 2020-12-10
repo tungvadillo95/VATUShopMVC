@@ -6,6 +6,10 @@
 <div class="text-left">
     <br />
     <h3 class="display-4 text-success text-center">QUẢN LÝ LOẠI HÀNG</h3>
+    @if (TempData["Message"] != null)
+    {
+        <p class="alert alert-default-success">@TempData["Message"]</p>
+    }
     <a asp-controller="Catergory" asp-action="Create" class="btn btn-primary" style="width: auto;">+ Thêm loại hàng</a>
     <hr />
     <table id="tbCategories" class="table table-bordered table-hover table-primary">

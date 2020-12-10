@@ -33,12 +33,15 @@ namespace VATUShop.MVC.ViewModels
         [Display(Name = "Tỉnh/Thành phố")]
         [Required(ErrorMessage = "Bạn chưa chọn Tỉnh/Thành phố")]
         public int ProvinceId { get; set; }
+        public string ProvinceName { get; set; }
         [Display(Name = "Quận/Huyện")]
         [Required(ErrorMessage = "Bạn chưa chọn Quận/Huyện")]
         public int DistrictId { get; set; }
+        public string DistrictName { get; set; }
         [Display(Name = "Phường/Xã")]
         [Required(ErrorMessage = "Bạn chưa chọn Phường/Xã")]
         public int WardId { get; set; }
+        public string WardName { get; set; }
         [Required(ErrorMessage = "Bạn chưa nhập địa chỉ")]
         [Display(Name = "Địa chỉ")]
         [MaxLength(200, ErrorMessage = "Địa chỉ nhập quá dài")]

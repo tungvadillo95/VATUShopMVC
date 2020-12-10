@@ -22,6 +22,13 @@ namespace VATUShop.MVC.RepositoryImplement
             this.webHostEnvironment = webHostEnvironment;
         }
 
+        public int ChangeStatus(int id, bool status)
+        {
+            var product = context.Products.Where(p => p.ProductId == id).FirstOrDefault();
+            product.Status = status;
+            return context.SaveChanges();
+        }
+
         public EditProductViewModel ConvertToEditProductViewModel(ProductViewModel model)
         {
             var productEdit = new EditProductViewModel()
@@ -156,7 +163,9 @@ namespace VATUShop.MVC.RepositoryImplement
                         {
                             ProductId = p.ProductId,
                             ProductName = p.ProductName,
+                            CategoryId = p.CategoryId,
                             CategoryName = c.CategoryName,
+                            BrandingId = p.BrandId,
                             BrandingName = b.BrandName,
                             Price = p.Price,
                             Inventory = p.Inventory,

@@ -1,11 +1,10 @@
-﻿@inject VATUShopMVCDbContext context
-@model EditUserViewModel
+﻿@model EditUserViewModel
 
 @{
     ViewBag.Title = "Edit User";
     var roles = ViewBag.Roles as IQueryable<IdentityRole>;
-    IEnumerable<District> districts = context.Districts.Where(d => d._province_id == Model.ProvinceId);
-    IEnumerable<Ward> wards = context.Wards.Where(w => w._district_id == Model.DistrictId);
+    IEnumerable<District> districts = Model.Districts.Where(d => d._province_id == Model.ProvinceId);
+    IEnumerable<Ward> wards = Model.Wards.Where(w => w._district_id == Model.DistrictId);
 }
 
 
@@ -45,7 +44,7 @@
             <div class="col-md-4 col-sm-4">
                 <div class="form-group">
                     <label asp-for="ProvinceId"></label>
-                    <select asp-for="ProvinceId" asp-items="@(new SelectList(context.Provinces, "id", "_name"))" class="custom-select" onchange="create.changeProvince(this.value)">
+                    <select asp-for="ProvinceId" asp-items="@(new SelectList(Model.Provinces, "id", "_name"))" class="custom-select" onchange="create.changeProvince(this.value)">
                     </select>
                     <span asp-validation-for="ProvinceId" class="text-danger"></span>
                 </div>

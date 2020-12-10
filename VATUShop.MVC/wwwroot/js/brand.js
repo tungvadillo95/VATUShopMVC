@@ -17,10 +17,8 @@ brands.delete = function (id) {
                     url: `/Brand/Delete/${id}`,
                     method: "GET",
                     contentType: 'json',
-                    success: function (data) {
-                        if (data > 0) {
+                    success: function () {
                             window.location.href = "/Brand/Index";
-                        }
                     }
                 });
             }

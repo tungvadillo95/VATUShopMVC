@@ -23,22 +23,6 @@ namespace VATUShop.MVC.Controllers
         {
             return View();
         }
-        [HttpGet]
-        public IActionResult BuyNow()
-        {
-            var cart = HttpContext.Session.GetString("cart");//get key cart
-            if (cart != null)
-            {
-                List<CartProduct> dataCart = JsonConvert.DeserializeObject<List<CartProduct>>(cart);
-                if (dataCart.Count > 0)
-                {
-                    ViewBag.carts = dataCart;
-                }
-            }
-            var model = new CustomerAnonymousViewModel();
-            model.Provinces = shoppingCartService.GetProvinces();
-            return View(model);
-        }
         [Route("/ShoppingCart/Districts/{provinceId}")]
         public IActionResult GetDistricts(int provinceId)
         {
@@ -162,6 +146,13 @@ namespace VATUShop.MVC.Controllers
                 return Ok(true);
             }
             return Ok(false);
+        }
+        [Route("/ShoppingCart/ResetCart")]
+        public IActionResult ResetCart()
+        {
+            HttpContext.Session.Clear();
+            TempData["Message"] = $"Bạn đã xóa hết sản phẩm trong giỏ hàng thành công";
+            return Ok(true);
         }
     }
 }

@@ -42,6 +42,18 @@ namespace VATUShop.MVC.Controllers
             var detailView = orderServie.Get(orderId);
             return View(detailView);
         }
+        [HttpPatch]
+        [Route("/Order/ChangeStatus/{orderId}/{statusId}")]
+        public IActionResult ChangeStatus(int orderId, int statusId)
+        {
+            if (orderServie.ChangeStatus(orderId, statusId) > 0)
+            {
+                TempData["Message"] = $"Bạn đã chuyển trạng thái đơn hàng có ID: {orderId} thành công";
+                return Ok(true);
+            }
+            TempData["Message"] = $"Thao tác chuyển trạng thái đơn hàng có ID: {orderId} không thành công";
+            return Ok(false);
+        }
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -56,6 +68,7 @@ namespace VATUShop.MVC.Controllers
                     ViewBag.carts = dataCart;
                 }
             }
+            ViewBag.IsUser = 0;
             if (signInManager.IsSignedIn(User))
             {
                 var id = userManager.GetUserId(User);
@@ -73,8 +86,11 @@ namespace VATUShop.MVC.Controllers
                         Address = user.Address
                     };
                 }
+                ViewBag.IsUser = 1;
             }
             model.Provinces = shoppingCartService.GetProvinces();
+            model.Districts = shoppingCartService.GetDistricts();
+            model.Wards = shoppingCartService.GetWards();
             return View(model);
         }
         [AllowAnonymous]
@@ -151,7 +167,7 @@ namespace VATUShop.MVC.Controllers
                 TempData["Message"] = $"Bạn đã xóa thành công đơn hàng có ID: {orderId}";
                 return Ok(true);
             }
-            TempData["Message"] = $"Tao tác xóa đơn hàng có ID: {orderId} không thành công";
+            TempData["Message"] = $"Thao tác xóa đơn hàng có ID: {orderId} không thành công";
             return Ok(false);
         }
     }

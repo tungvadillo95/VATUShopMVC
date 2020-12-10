@@ -29,6 +29,42 @@ products.delete = function (id) {
 }
 
 
+products.changeStatus = function (productId, statusInt) {
+    var statusName = "";
+    switch (statusInt) {
+        case 0: statusName = "Dừng bán"
+            break;
+        case 1: statusName = "Bán"
+            break;
+    }
+    bootbox.confirm({
+        title: "Cảnh báo",
+        message: `Bạn có muốn chuyển trạng thái sản phẩm này sang trạng thái <b class='text-danger'>${statusName}</b> không?`,
+        buttons: {
+            cancel: {
+                label: '<i class="fa fa-times"></i> Không'
+            },
+            confirm: {
+                label: '<i class="fa fa-check"></i> Có'
+            }
+        },
+        callback: function (result) {
+            if (result) {
+                $.ajax({
+                    url: `/Product/ChangeStatus/${productId}/${statusInt}`,
+                    method: "PATCH",
+                    contentType: 'json',
+                    success: function (data) {
+                        if (data > 0) {
+                            window.location.href = "/Product/Index";
+                        }
+                    }
+                });
+            }
+        }
+    });
+}
+
 $(document).ready(function () {
     $("#tbProducts").dataTable(
         {
@@ -50,6 +86,22 @@ $(document).ready(function () {
                 }
             },
             "columnDefs": [
+                {
+                    "targets": 1,
+                    "orderable": false
+                },
+                {
+                    "targets": 2,
+                    "orderable": false
+                },
+                {
+                    "targets": 3,
+                    "orderable": false
+                },
+                {
+                    "targets": 6,
+                    "orderable": false
+                },
                 {
                     "targets": 7,
                     "orderable": false,

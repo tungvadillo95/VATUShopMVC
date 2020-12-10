@@ -41,10 +41,13 @@ namespace VATUShop.MVC.Controllers
         [Route("/Catergory/Delete/{categoryId}")]
         public IActionResult Delete(int categoryId)
         {
+            var category = catergoryService.Get(categoryId);
             if (catergoryService.Delete(categoryId))
             {
+                TempData["Message"] = $"Loại hàng: * {category.CategoryName} * đã được xóa thành công";
                 return Ok(true);
             }
+            TempData["Message"] = $"Thao tác xóa Loại hàng: * {category.CategoryName} * không thành công. Phải xóa Sản phẩm dùng Loại hàng: * {category.CategoryName} * trước.";
             return Ok(false);
         }
 

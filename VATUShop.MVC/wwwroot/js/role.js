@@ -1,5 +1,32 @@
-﻿var users = {} || users;
+﻿var roles = {} || roles;
 
+roles.delete = function (id) {
+    var roleName = document.getElementById(`${id}`).innerHTML;
+    bootbox.confirm({
+        title: "Cảnh báo",
+        message: `Bạn có muốn xóa Role name: <b class="text-danger">${roleName}</b> này không?`,
+        buttons: {
+            cancel: {
+                label: '<i class="fa fa-times"></i> Không'
+            },
+            confirm: {
+                label: '<i class="fa fa-check"></i> Có'
+            }
+        },
+        callback: function (result) {
+            if (result) {
+                $.ajax({
+                    url: `/Role/Delete/${id}`,
+                    method: "GET",
+                    contentType: 'json',
+                    success: function () {
+                            window.location.href = "/Role/Index";
+                    }
+                });
+            }
+        }
+    });
+}
 
 $(document).ready(function () {
     $("#tbRoles").dataTable(

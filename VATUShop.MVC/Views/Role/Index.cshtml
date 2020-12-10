@@ -4,6 +4,10 @@
 }
 <br />
 <h3 class="display-4 text-success text-center">QUẢN LÝ VAI TRÒ</h3>
+@if (TempData["Message"] != null)
+{
+    <p class="alert alert-default-success">@TempData["Message"]</p>
+}
 <a asp-controller="Role" asp-action="Create" class="btn btn-primary" style="width:auto;">+ Tạo vai trò</a>
 <hr />
 <table id="tbRoles" class="table table-bordered table-hover mt-2">
@@ -21,10 +25,10 @@
             {
                 <tr>
                     <td>@role.RoleId</td>
-                    <td>@role.RoleName</td>
+                    <td id="@role.RoleId">@role.RoleName</td>
                     <td>
-                        <a asp-controller="Role" asp-action="Edit" asp-route-id="@role.RoleId" class="btn btn-warning">Edit</a>
-                        <a asp-controller="Role" asp-action="Delete" asp-route-id="@role.RoleId" class="btn btn-success">Delete</a>
+                        <a asp-controller="Role" asp-action="Edit" asp-route-id="@role.RoleId" class="btn btn-warning">Cập nhật</a>
+                        <a href="javascript:void(0)" class="btn btn-danger m-2" onclick="roles.delete('@role.RoleId')">Xóa</a>
                     </td>
                 </tr>
             }

@@ -13,5 +13,6 @@ namespace VATUShop.MVC.Service
         IEnumerable<OrderViewModel> Gets();
         OrderViewModel Get(int orderId);
         bool Delete(int Id);
+        int ChangeStatus(int id, int status);
     }
 }

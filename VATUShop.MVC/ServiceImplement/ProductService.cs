@@ -24,6 +24,11 @@ namespace VATUShop.MVC.ServiceImplement
             this.catergoryService = catergoryService;
         }
 
+        public int ChangeStatus(int id, bool status)
+        {
+            return productRepository.ChangeStatus(id, status);
+        }
+
         public EditProductViewModel ConvertToEditProductViewModel(ProductViewModel model)
         {
             var productEdit = productRepository.ConvertToEditProductViewModel(model);

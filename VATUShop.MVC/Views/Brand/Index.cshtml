@@ -6,6 +6,10 @@
 <div class="text-left">
     <br />
     <h3 class="display-4 text-success text-center">QUẢN LÝ THƯƠNG HIỆU</h3>
+    @if (TempData["Message"] != null)
+    {
+        <p class="alert alert-default-success">@TempData["Message"]</p>
+    }
     <a asp-controller="Brand" asp-action="Create" class="btn btn-primary" style="width: auto;">+ Thêm thương hiệu</a>
     <hr />
     <table id="tbBrands" class="table table-bordered table-hover table-primary">

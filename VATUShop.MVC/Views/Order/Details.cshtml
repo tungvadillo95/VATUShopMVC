@@ -1,5 +1,4 @@
-﻿@inject VATUShopMVCDbContext context
-@model OrderViewModel
+﻿@model OrderViewModel
 @{
     ViewBag.Title = "Order " + Model.OrderId;
     float subTotal = 0;
@@ -8,6 +7,7 @@
         subTotal += (od.Quantity * od.UnitPrice);
     }
     var stt = 0;
+    var adress = Model.Address + ", " + Model.WardName + ", " + Model.DistrictName + ", " + Model.ProvinceName;
 }
 
 <h2 class="text-center text-primary">CHI TIẾT ĐƠN HÀNG</h2>
@@ -19,9 +19,7 @@
                 <p><b>Số điện thoại: </b> @Model.PhoneNumber</p>
                 <p>
                     <b>Địa chỉ: </b>
-                    @(Model.Address + ", " + context.Wards.Where(w => w.id == Model.WardId).FirstOrDefault().WardName
-                                        + ", " + context.Districts.Where(d => d.id == Model.DistrictId).FirstOrDefault().DistrictName
-                                        + ", " + context.Provinces.Where(p => p.id == Model.ProvinceId).FirstOrDefault()._name)
+                     @adress
                 </p>
                 <p>
                     <b>Ngày tạo đơn: </b>
@@ -33,7 +31,7 @@
                 </p>
                 <p>
                     <b>Trạng thái: </b>
-                    @context.StatusOrders.Where(s => s.StatusId == Model.StatusId).FirstOrDefault().StatusName
+                    @Model.StatusName
                 </p>
                 <div>
                     <table class="table table-bordered table-hover table-primary">

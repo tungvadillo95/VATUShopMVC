@@ -13,5 +13,6 @@ namespace VATUShop.MVC.Repository
         OrderViewModel Get(int orderId);
         int Create(Order order);
         bool Delete(int id);
+        int ChangeStatus(int id, int status);
     }
 }

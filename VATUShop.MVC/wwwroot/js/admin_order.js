@@ -2,7 +2,7 @@
 orders.delete = function (id) {
     bootbox.confirm({
         title: "Cảnh báo",
-        message: "Bạn có muốn xóa đơn hàng hàng này không?",
+        message: "Bạn có muốn xóa đơn hàng này không?",
         buttons: {
             cancel: {
                 label: '<i class="fa fa-times"></i> Không'
@@ -28,6 +28,43 @@ orders.delete = function (id) {
     });
 }
 
+
+var orders = orders || {};
+orders.changeStatus = function (orderId, statusId) {
+    var statusName = "";
+    switch (statusId) {
+        case 2: statusName = "Active"
+            break;
+        case 3: statusName = "Complete"
+            break;
+    }
+    bootbox.confirm({
+        title: "Cảnh báo",
+        message: `Bạn có muốn chuyển trạng thái đơn hàng này sang trạng thái <b class='text-danger'>${statusName}</b> không?`,
+        buttons: {
+            cancel: {
+                label: '<i class="fa fa-times"></i> Không'
+            },
+            confirm: {
+                label: '<i class="fa fa-check"></i> Có'
+            }
+        },
+        callback: function (result) {
+            if (result) {
+                $.ajax({
+                    url: `/Order/ChangeStatus/${orderId}/${statusId}`,
+                    method: "PATCH",
+                    contentType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            window.location.href = "/Order/Index";
+                        }
+                    }
+                });
+            }
+        }
+    });
+}
 
 jQuery.extend(jQuery.fn.dataTableExt.oSort, {
     "formatted-num-pre": function (a) {

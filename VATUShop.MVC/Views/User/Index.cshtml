@@ -1,10 +1,16 @@
-﻿@inject VATUShopMVCDbContext context
-@model IEnumerable<UserViewModel>
+﻿@model IEnumerable<UserViewModel>
 @{
     ViewBag.Title = "User Management";
+    var provinces = ViewBag.Provinces as List<Province>;
+    var districts = ViewBag.Districts as List<District>;
+    var wards = ViewBag.Wards as List<Ward>;
 }
 <br />
 <h3 class="display-4 text-success text-center">QUẢN LÝ TÀI KHOẢN</h3>
+@if (TempData["Message"] != null)
+{
+    <p class="alert alert-default-success">@TempData["Message"]</p>
+}
 <a asp-controller="User" asp-action="Create" class="btn btn-primary" style="width: auto;">+ Tạo tài khoản</a>
 <hr />
 <table id="tbUsers" class="table table-bordered table-hover table-primary">
@@ -31,14 +37,14 @@
                         <td>@user.Email</td>
                         <td>@user.PhoneNumber</td>
                         <td>
-                            @(user.Address  + ", " + context.Wards.Where(d => d.id == user.WardId).FirstOrDefault().WardName
-                                            + ", " + context.Districts.Where(d => d.id == user.DistrictId).FirstOrDefault().DistrictName
-                                            + ", " + context.Provinces.Where(p => p.id == user.ProvinceId).FirstOrDefault()._name)
+                            @(user.Address + ", " + wards.Where(w => w.id == user.WardId).FirstOrDefault().WardName
+                                           + ", " + districts.Where(d => d.id == user.DistrictId).FirstOrDefault().DistrictName
+                                           + ", " + provinces.Where(p => p.id == user.ProvinceId).FirstOrDefault()._name)
                         </td>
                         <td>@user.RolesName</td>
                         <td>
-                            <a asp-controller="User" asp-action="Edit" asp-route-id="@user.UserId" class="btn btn-warning">Sửa</a>
-                            <a asp-controller="User" asp-action="Delete" asp-route-id="@user.UserId" class="btn btn-danger">Xóa</a>
+                            <a asp-controller="User" asp-action="Edit" asp-route-id="@user.UserId" class="text-warning m-2" title="Cập nhật"><i class="fas fa-edit"></i></a>
+                            <a href="javascript:void(0)" class="text-danger m-2" onclick="users.delete('@user.UserId')" title="Xóa"><i class="fas fa-trash"></i></a>
                         </td>
                     </tr>
                 }

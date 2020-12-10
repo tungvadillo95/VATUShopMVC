@@ -14,22 +14,22 @@ namespace VATUShop.MVC.Controllers
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IShoppingCartService shoppingCartService;
 
         public UserController(UserManager<ApplicationUser> userManager,
-                                SignInManager<ApplicationUser> signInManager,
                                 RoleManager<IdentityRole> roleManager,
                                 IShoppingCartService shoppingCartService)
         {
             this.userManager = userManager;
-            this.signInManager = signInManager;
             this.roleManager = roleManager;
             this.shoppingCartService = shoppingCartService;
         }
         public IActionResult Index()
         {
+            ViewBag.Provinces = shoppingCartService.GetProvinces();
+            ViewBag.Districts = shoppingCartService.GetDistricts();
+            ViewBag.Wards = shoppingCartService.GetWards();
             var users = userManager.Users;
             if (users != null && users.Any())
             {
@@ -137,6 +137,9 @@ namespace VATUShop.MVC.Controllers
                     var role = await roleManager.FindByNameAsync(rolesName.FirstOrDefault());
                     model.RolesId = role.Id;
                 }
+                model.Provinces = shoppingCartService.GetProvinces();
+                model.Districts = shoppingCartService.GetDistricts();
+                model.Wards = shoppingCartService.GetWards();
                 return View(model);
             }
             return View();
@@ -187,6 +190,7 @@ namespace VATUShop.MVC.Controllers
             }
             return View(model);
         }
+        [Route("/User/Delete/{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             var user = await userManager.FindByIdAsync(id);
@@ -196,14 +200,16 @@ namespace VATUShop.MVC.Controllers
                 var result = await userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "User");
+                    TempData["Message"] = $"Bạn đã xóa thành công tài khoản có User name: {user.UserName}";
+                    return Ok(true);
                 }
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
                 }
             }
-            return View();
+            TempData["Message"] = $"Thao tác xóa không thành công tài khoản có User name: {user.UserName}";
+            return Ok(false);
         }
     }
 }

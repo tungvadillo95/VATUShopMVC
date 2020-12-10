@@ -15,19 +15,14 @@ namespace VATUShop.MVC.RepositoryImplement
         {
             this.context = context;
         }
-        //public int CreateNormalOrder(Order order)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public int CreateOrder(Order order)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         public IEnumerable<District> GetDistricts(int provinceId)
         {
             return context.Districts.Where(e => e._province_id == provinceId).ToList();
+        }
+
+        public IEnumerable<District> GetDistricts()
+        {
+            return context.Districts.ToList();
         }
 
         public IEnumerable<Province> GetProvinces()
@@ -52,11 +47,9 @@ namespace VATUShop.MVC.RepositoryImplement
             return context.Wards.ToList();
         }
 
-        //public int SubtractionWareHouse(int quantity, int productId)
-        //{
-        //    var product = context.Products.Find(productId);
-        //    product.Inventory -= quantity;
-        //    return context.SaveChanges();
-        //}
+        public IEnumerable<Ward> GetWards()
+        {
+            return context.Wards.ToList();
+        }
     }
 }

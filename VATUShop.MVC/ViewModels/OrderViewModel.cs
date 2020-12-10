@@ -27,6 +27,7 @@ namespace VATUShop.MVC.ViewModels
         public string AccountCustomerId { get; set; }
         [Display(Name = "Trạng thái")]
         public int StatusId { get; set; }
+        public string StatusName { get; set; }
         public bool IsAnonymousOrder { get; set; }
         public int CustomerAnonymousId { get; set; }
         public bool IsDelete { get; set; }

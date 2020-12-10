@@ -12,10 +12,13 @@ namespace VATUShop.MVC.ServiceImplement
     public class BrandService : IBrandService
     {
         private readonly IBrandRepository brandRepository;
+        private readonly IProductRepository productRepository;
 
-        public BrandService(IBrandRepository brandRepository)
+        public BrandService(IBrandRepository brandRepository,
+                            IProductRepository productRepository)
         {
             this.brandRepository = brandRepository;
+            this.productRepository = productRepository;
         }
 
         public int Create(BrandViewModel model)
@@ -25,6 +28,11 @@ namespace VATUShop.MVC.ServiceImplement
 
         public bool Delete(int id)
         {
+            var products = productRepository.Gets().Where(p => p.BrandingId == id).ToList();
+            if (products.Count > 0)
+            {
+                return false;
+            }
             return brandRepository.Delete(id);
         }
 

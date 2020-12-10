@@ -13,9 +13,13 @@ namespace VATUShop.MVC.Controllers
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
-        public RoleController(RoleManager<IdentityRole> roleManager)
+        private readonly UserManager<ApplicationUser> userManager;
+
+        public RoleController(RoleManager<IdentityRole> roleManager,
+                              UserManager<ApplicationUser> userManager)
         {
             this.roleManager = roleManager;
+            this.userManager = userManager;
         }
         public IActionResult Index()
         {
@@ -98,42 +102,29 @@ namespace VATUShop.MVC.Controllers
             }
             return View(model);
         }
-        [HttpGet]
+        [Route("/Role/Delete/{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var role = await roleManager.FindByIdAsync(id);
-            if (role != null)
-            {
-                var model = new RoleViewModel()
-                {
-                    RoleId = role.Id,
-                    RoleName = role.Name
-                };
-                return View(model);
-            }
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Delete(RoleViewModel model)
-        {
-            var deleteRole = await roleManager.FindByIdAsync(model.RoleId);
+            var deleteRole = await roleManager.FindByIdAsync(id);
             if (deleteRole != null)
             {
+                var userInRole = await userManager.GetUsersInRoleAsync(deleteRole.Name);
+                var users = userInRole.Select(u => u.IsDeleted == false).ToList();
+                if(users.Count > 0)
+                {
+                    TempData["Message"] = $"Thao tác xóa Role name: * {deleteRole.Name} * không thành công. Phải xóa tài khoản User dùng Role name: * {deleteRole.Name} * trước.";
+                    return Ok();
+                }
                 var result = await roleManager.DeleteAsync(deleteRole);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Role");
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
+
+                    TempData["Message"] = $"Bạn đã xóa thành công Role name: * {deleteRole.Name} *";
+                    return Ok();
                 }
             }
-            return View();
+            TempData["Message"] = $"Thao tác xóa Role name: * {deleteRole.Name} * không thành công";
+            return Ok();
         }
     }
 }

@@ -17,6 +17,12 @@ namespace VATUShop.MVC.ServiceImplement
         {
             this.orderRepository = orderRepository;
         }
+
+        public int ChangeStatus(int id, int status)
+        {
+            return orderRepository.ChangeStatus(id, status);
+        }
+
         public int Create(Order model)
         {
             return orderRepository.Create(model);

@@ -1,12 +1,11 @@
-﻿@inject VATUShopMVCDbContext context
-@inject SignInManager<ApplicationUser> signInManager
-@model OrderViewModel
+﻿@model OrderViewModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Create Order";
+    var isUser = ViewBag.IsUser;
     var dataCart = ViewBag.carts != null ? ViewBag.carts as List<CartProduct> : new List<CartProduct>();
-    IEnumerable<District> districts = context.Districts.Where(d => d._province_id == Model.ProvinceId);
-    IEnumerable<Ward> wards = context.Wards.Where(w => w._district_id == Model.DistrictId);
+    IEnumerable<District> districts = Model.Districts.Where(d => d._province_id == Model.ProvinceId);
+    IEnumerable<Ward> wards = Model.Wards.Where(w => w._district_id == Model.DistrictId);
 }
 
 <h2 class="text-center text-success m-2">THÔNG TIN ĐƠN HÀNG</h2>
@@ -46,13 +45,13 @@
                     <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
             </div>
-            @if (signInManager.IsSignedIn(User))
+            @if (isUser == 1)
             {
                 <div class="row col-xs-12 m-2">
                     <div class="col-md-4 col-sm-4">
                         <div class="form-group">
                             <label asp-for="ProvinceId"></label>
-                            <select asp-for="ProvinceId" asp-items="@(new SelectList(context.Provinces, "id", "_name"))" class="custom-select" onchange="create.changeProvince(this.value)">
+                            <select asp-for="ProvinceId" asp-items="@(new SelectList(Model.Provinces, "id", "_name"))" class="custom-select" onchange="create.changeProvince(this.value)">
                             </select>
                             <span asp-validation-for="ProvinceId" class="text-danger"></span>
                         </div>

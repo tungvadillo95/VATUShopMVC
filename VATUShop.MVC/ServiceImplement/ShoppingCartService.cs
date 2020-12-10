@@ -21,6 +21,11 @@ namespace VATUShop.MVC.ServiceImplement
             return shoppingCartRepository.GetDistricts(provinceId);
         }
 
+        public IEnumerable<District> GetDistricts()
+        {
+            return shoppingCartRepository.GetDistricts();
+        }
+
         public IEnumerable<Province> GetProvinces()
         {
             return shoppingCartRepository.GetProvinces();
@@ -29,6 +34,11 @@ namespace VATUShop.MVC.ServiceImplement
         public IEnumerable<Ward> GetWards(int districtId, int provinceId)
         {
             return shoppingCartRepository.GetWards(districtId, provinceId);
+        }
+
+        public IEnumerable<Ward> GetWards()
+        {
+            return shoppingCartRepository.GetWards();
         }
     }
 }

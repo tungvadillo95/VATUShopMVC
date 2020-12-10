@@ -16,5 +16,6 @@ namespace VATUShop.MVC.Repository
         EditProductViewModel ConvertToEditProductViewModel(ProductViewModel model);
         Product Edit(EditProductViewModel model);
         bool Delete(int id);
+        int ChangeStatus(int id, bool status);
     }
 }

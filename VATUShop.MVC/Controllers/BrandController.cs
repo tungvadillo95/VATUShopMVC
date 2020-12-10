@@ -41,10 +41,13 @@ namespace VATUShop.MVC.Controllers
         [Route("/Brand/Delete/{brandId}")]
         public IActionResult Delete(int brandId)
         {
+            var brand = brandService.Get(brandId);
             if (brandService.Delete(brandId))
             {
+                TempData["Message"] = $"Thương hiệu: * {brand.BrandName} * đã được xóa thành công";
                 return Ok(true);
             }
+            TempData["Message"] = $"Thao tác xóa Thương hiệu: * {brand.BrandName} * không thành công. Phải xóa Sản phẩm dùng Thương hiệu: * {brand.BrandName} * trước.";
             return Ok(false);
         }
         [HttpGet]

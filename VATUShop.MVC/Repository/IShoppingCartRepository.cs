@@ -14,5 +14,7 @@ namespace VATUShop.MVC.Repository
         IEnumerable<Province> GetProvinces();
         IEnumerable<District> GetDistricts(int provinceId);
         IEnumerable<Ward> GetWards(int districtId, int provinceId);
+        IEnumerable<District> GetDistricts();
+        IEnumerable<Ward> GetWards();
     }
 }
